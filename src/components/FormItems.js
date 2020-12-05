@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_MD, MEDIA_QUERY_LG } from "../constants/style";
+import PropTypes from "prop-types";
 
 export const FormBorderDiv = styled.div`
   background: #fad312;
@@ -150,10 +151,11 @@ function RadioItem({ name, id, value, type, handleChange }) {
 }
 
 export function FormInputItem({
-  question,
-  isRequired,
+  name,
   type,
   value,
+  question,
+  isRequired,
   handleInputChange,
   setRemind,
 }) {
@@ -161,6 +163,7 @@ export function FormInputItem({
     <section>
       <FormQuestion isRequired={isRequired}>{question}</FormQuestion>
       <FormInput
+        name={name}
         type={type}
         placeholder="您的回答"
         value={value}
@@ -175,7 +178,7 @@ export function FormInputItem({
   );
 }
 
-export function FormRadioItem({ name, type, handleChoicesChange }) {
+export function FormRadioItem({ name, type, handleInputChange }) {
   return (
     <RadioGroup>
       <RadioItem
@@ -183,15 +186,39 @@ export function FormRadioItem({ name, type, handleChoicesChange }) {
         id="1"
         value="躺在床上用想像力實作"
         type={type}
-        handleChange={handleChoicesChange}
+        handleChange={handleInputChange}
       />
       <RadioItem
         name={name}
         id="2"
         value="趴在地上滑手機找現成的"
         type={type}
-        handleChange={handleChoicesChange}
+        handleChange={handleInputChange}
       />
     </RadioGroup>
   );
 }
+
+RadioItem.propTypes = {
+  name: PropTypes.string,
+  id: PropTypes.string,
+  value: PropTypes.string,
+  type: PropTypes.string,
+  handleChange: PropTypes.func,
+};
+
+FormInputItem.propTypes = {
+  name: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.string,
+  question: PropTypes.string,
+  isRequired: PropTypes.bool,
+  handleInputChange: PropTypes.func,
+  setRemind: PropTypes.bool,
+};
+
+FormRadioItem.propTypes = {
+  name: PropTypes.string,
+  type: PropTypes.string,
+  handleInputChange: PropTypes.func,
+};

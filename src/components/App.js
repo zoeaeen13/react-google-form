@@ -1,5 +1,5 @@
-import "./App.css";
 import { useState } from "react";
+import { isNotBlank, isNumber, validateEmail } from "../utills";
 import {
   FormBorderDiv,
   FormWrapper,
@@ -13,7 +13,7 @@ import {
 } from "./FormItems";
 
 function App() {
-  const [validState, setValidState] = useState(false);
+  const [isClickSubmit, setClickSubmit] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,21 +23,9 @@ function App() {
     advice: "",
   });
 
-  function isNotBlank(str) {
-    return str.length !== 0;
-  }
-
-  function isNumber(str) {
-    return /^[0-9]+$/.test(str);
-  }
-
-  function validateEmail(str) {
-    return /\S+@\S+\.\S+/.test(str);
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    setValidState(true);
+    setClickSubmit(true);
 
     if (
       isNotBlank(formData.name) &&
@@ -54,52 +42,51 @@ function App() {
         intro: "",
         advice: "",
       });
-      setValidState(false);
+      setClickSubmit(false);
     }
-
-    console.log("formData", formData);
   };
 
-  const handleNameChange = (e) => {
-    setFormData({
-      ...formData,
-      name: e.target.value,
-    });
-  };
-
-  const handleEmailChange = (e) => {
-    setFormData({
-      ...formData,
-      email: e.target.value,
-    });
-  };
-
-  const handlePhoneChange = (e) => {
-    setFormData({
-      ...formData,
-      phone: e.target.value,
-    });
-  };
-
-  const handleChoicesChange = (e) => {
-    setFormData({
-      ...formData,
-      choices: Number(e.target.id),
-    });
-  };
-
-  const handleIntroChange = (e) => {
-    setFormData({
-      ...formData,
-      intro: e.target.value,
-    });
-  };
-
-  const handleAdviceChange = (e) => {
-    setFormData({
-      ...formData,
-      advice: e.target.value,
-    });
+  const handleInputChange = (e) => {
+    switch (e.target.name) {
+      case "name":
+        setFormData({
+          ...formData,
+          name: e.target.value,
+        });
+        break;
+      case "email":
+        setFormData({
+          ...formData,
+          email: e.target.value,
+        });
+        break;
+      case "phone":
+        setFormData({
+          ...formData,
+          phone: e.target.value,
+        });
+        break;
+      case "choices":
+        setFormData({
+          ...formData,
+          choices: Number(e.target.id),
+        });
+        break;
+      case "intro":
+        setFormData({
+          ...formData,
+          intro: e.target.value,
+        });
+        break;
+      case "advice":
+        setFormData({
+          ...formData,
+          advice: e.target.value,
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -112,48 +99,53 @@ function App() {
           <FormDesc>活動地點：台北市大安區新生南路二段1號</FormDesc>
           <FormDesc remind>*必填</FormDesc>
           <FormInputItem
-            question="暱稱"
-            isRequired={true}
+            name="name"
             type="text"
             value={formData.name}
-            handleInputChange={handleNameChange}
-            setRemind={validState && !isNotBlank(formData.name)}
+            question="暱稱"
+            isRequired={true}
+            handleInputChange={handleInputChange}
+            setRemind={isClickSubmit && !isNotBlank(formData.name)}
           />
           <FormInputItem
-            question="電子郵件"
-            isRequired={true}
+            name="email"
             type="email"
             value={formData.email}
-            handleInputChange={handleEmailChange}
-            setRemind={validState && !validateEmail(formData.email)}
+            question="電子郵件"
+            isRequired={true}
+            handleInputChange={handleInputChange}
+            setRemind={isClickSubmit && !validateEmail(formData.email)}
           />
           <FormInputItem
-            question="手機號碼"
-            isRequired={true}
+            name="phone"
             type="number"
             value={formData.phone}
-            handleInputChange={handlePhoneChange}
-            setRemind={validState && !isNumber(formData.phone)}
+            question="手機號碼"
+            isRequired={true}
+            handleInputChange={handleInputChange}
+            setRemind={isClickSubmit && !isNumber(formData.phone)}
           />
           <FormQuestion isRequired={true}>報名類型</FormQuestion>
           <FormRadioItem
             name="choices"
             type={formData.choices}
-            handleChoicesChange={handleChoicesChange}
+            handleInputChange={handleInputChange}
           />
           <FormInputItem
+            name="intro"
+            type="text"
+            value={formData.intro}
             question="怎麼知道這個活動的？"
             isRequired={true}
-            value={formData.intro}
-            type="text"
-            handleInputChange={handleIntroChange}
-            setRemind={validState && !isNotBlank(formData.intro)}
+            handleInputChange={handleInputChange}
+            setRemind={isClickSubmit && !isNotBlank(formData.intro)}
           />
           <FormInputItem
-            question="其他對活動的一些建議"
+            name="advice"
             type="text"
             value={formData.advice}
-            handleInputChange={handleAdviceChange}
+            question="其他對活動的一些建議"
+            handleInputChange={handleInputChange}
           />
           <ButtonSubmit>提交</ButtonSubmit>
           <FormDesc remind>*請勿透過表單送出您的密碼</FormDesc>
